@@ -1,4 +1,4 @@
-# Lab 1: YOUR_FIRSTNAME LASTNAME
+# Lab 1: David Hromas
 
 ### Morse code
 
@@ -31,7 +31,7 @@ int main(void)
         
             led_value = HIGH;
 
-            _delay_ms(LONG_DELAY); //LONG_DELAY = 1000 ms
+            _delay_ms(SHORT_DELAY); 
             digitalWrite(LED_GREEN, led_value);
             digitalWrite(LED_BLUE, led_value);
             
@@ -39,7 +39,7 @@ int main(void)
             
             led_value = LOW;
 
-            _delay_ms(LONG_DELAY);      
+            _delay_ms(LONG_DELAY); //LONG_DELAY = 1000 ms     
             digitalWrite(LED_GREEN, led_value);
             digitalWrite(LED_BLUE, led_value);
 
