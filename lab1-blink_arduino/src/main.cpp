@@ -67,7 +67,7 @@ int main(void)
         
             led_value = HIGH;
 
-            _delay_ms(LONG_DELAY);
+            _delay_ms(SHORT_DELAY);
             digitalWrite(LED_GREEN, led_value);
             digitalWrite(LED_BLUE, led_value);
             
