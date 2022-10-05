@@ -27,9 +27,9 @@
 // -----
 // This part is needed to use Arduino functions but also physical pin
 // names. We are using Arduino-style just to simplify the first lab.
-#include "Arduino.h"
-#define PB5 13          // In Arduino world, PB5 is called "13"
-#define PB0 8
+//#include "Arduino.h"
+#define PB5 5          // In Arduino world, PB5 is called "13"
+#define PB0 0
 // -----
 
 
@@ -41,29 +41,37 @@
  **********************************************************************/
 int main(void)
 {
-    uint8_t led_value = LOW;  // Local variable to keep LED status
+    //uint8_t led_value = LOW;  // Local variable to keep LED status
 
     // Set pin where on-board LED is connected as output
-    pinMode(LED_GREEN, OUTPUT);
+   // pinMode(LED_GREEN, OUTPUT);
+    DDRB |= (1 << LED_GREEN);
     // Set second pin as output
-    pinMode(LED_RED, OUTPUT);
-
+    //pinMode(LED_RED, OUTPUT);
+   
     // Infinite loop
     while (1)
     {
         // Turn ON/OFF on-board LED ...
-        digitalWrite(LED_GREEN, led_value);
+        //digitalWrite(LED_GREEN, led_value);
+        PORTB |= (1 << LED_GREEN);
         // ... and external LED as well
-        digitalWrite(LED_RED, led_value);
-
+        //digitalWrite(LED_RED, led_value);
+        
         // Pause several milliseconds
         _delay_ms(SHORT_DELAY);
 
+        PORTB &= ~(1 << LED_GREEN);
+
+        _delay_ms(SHORT_DELAY);
         // Change LED value
-        if (led_value == LOW)
-            led_value = HIGH;
-        else
-            led_value = LOW;
+       // if (LED_GREEN == 1)
+         // PORTB |= (1 << LED_GREEN); 
+       // else
+         //   PORTB &= ~(1 << LED_GREEN);
+        
+      
+       
     }
 
     // Will never reach this
