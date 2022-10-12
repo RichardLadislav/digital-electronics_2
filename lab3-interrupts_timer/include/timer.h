@@ -64,14 +64,37 @@
  * @note  t_OVF = 1/F_CPU * prescaler * 2^n where n = 8, F_CPU = 16 MHz
  */
 // WRITE YOUR CODE HERE
+#define TIM1_stop()             TCCR1B &= ~((1<<CS02) | (1<<CS01) | (1<<CS00));
 
+#define TIM1_overflow_16us()    TCCR0B &= ~((1<<CS02) | (1<<CS01)); TCCR1B |= (1<<CS00);
 
+#define TIM1_overflow_128us()   TCCR0B &= ~((1<<CS02) | (1<<CS01)); TCCR1B |= (1<<CS00);
+
+#define TIM1_overflow_1ms()     TCCR0B &= ~((1<<CS02) | (1<<CS01)); TCCR1B |= (1<<CS00);
+
+#define TIM1_overflow_4ms()     TCCR0B &= ~((1<<CS02) | (1<<CS01)); TCCR1B |= (1<<CS00);
+
+#define TIM1_overflow_16ms()    TCCR0B &= ~((1<<CS02) | (1<<CS01)); TCCR1B |= (1<<CS00);
 /**
  * @name  Definitions for 8-bit Timer/Counter2
  * @note  t_OVF = 1/F_CPU * prescaler * 2^n where n = 8, F_CPU = 16 MHz
  */
 // WRITE YOUR CODE HERE
+#define TIM1_stop()             TCCR1B &= ~((1<<CS22) | (1<<CS21) | (1<<CS20));
 
+#define TIM1_overflow_16us()    TCCR2B &= ~((1<<CS22) | (1<<CS21)); TCCR1B |= (1<<CS20);
+
+#define TIM1_overflow_128us()   TCCR2B &= ~((1<<CS22) | (1<<CS21)); TCCR1B |= (1<<CS20);
+
+#define TIM1_overflow_512us()   TCCR2B &= ~((1<<CS22) | (1<<CS21)); TCCR1B |= (1<<CS20);
+
+#define TIM1_overflow_1ms()     TCCR2B &= ~((1<<CS22) | (1<<CS21)); TCCR1B |= (1<<CS20);
+
+#define TIM1_overflow_2ms()     TCCR2B &= ~((1<<CS22) | (1<<CS21)); TCCR1B |= (1<<CS20);
+
+#define TIM1_overflow_4ms()     TCCR2B &= ~((1<<CS22) | (1<<CS21)); TCCR1B |= (1<<CS20);
+
+#define TIM1_overflow_16ms()    TCCR2B &= ~((1<<CS22) | (1<<CS21)); TCCR1B |= (1<<CS20);
 
 /** @} */
 
