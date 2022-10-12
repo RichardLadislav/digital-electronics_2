@@ -38,6 +38,8 @@ int main(void)
 
     // Configuration of 16-bit Timer/Counter1 for LED blinking
     // Set the overflow prescaler to 262 ms and enable interrupt
+    TIM1_overflow_262ms();
+    TIM1_overflow_interrupt_enable();
     TIM2_overflow_16ms();
     TIM2_overflow_interrupt_enable();
 
@@ -61,7 +63,7 @@ int main(void)
  * Function: Timer/Counter1 overflow interrupt
  * Purpose:  Toggle on-board LED.
  **********************************************************************/
-ISR(TIMER1_OVF_vect)
+ISR(TIMER2_OVF_vect)
 {
     PORTB = PORTB ^ (1<<LED_GREEN);
 }
