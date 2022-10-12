@@ -64,37 +64,49 @@
  * @note  t_OVF = 1/F_CPU * prescaler * 2^n where n = 8, F_CPU = 16 MHz
  */
 // WRITE YOUR CODE HERE
-#define TIM1_stop()             TCCR1B &= ~((1<<CS02) | (1<<CS01) | (1<<CS00));
+/** @brief Stop timer, prescaler 000 --> STOP */
+#define TIM0_stop()           TCCR0B &= ~((1<<CS02) | (1<<CS01) | (1<<CS00));
+/** @brief Set overflow 16u, prescaler 001 --> 1 */
+#define TIM0_overflow_16u()   TCCR0B &= ~((1<<CS02) | (1<<CS01)); TCCR0B |= (1<<CS00);
+/** @brief Set overflow 128u, prescaler 010 --> 8 */
+#define TIM0_overflow_128u()  TCCR0B &= ~((1<<CS02) | (1<<CS00)); TCCR0B |= (1<<CS01);
+/** @brief Set overflow 1ms, prescaler 011 --> 64 */
+#define TIM0_overflow_1ms()   TCCR0B &= ~(1<<CS02); TCCR0B |= (1<<CS01) | (1<<CS00);
+/** @brief Set overflow 4ms, prescaler 100 --> 256 */
+#define TIM0_overflow_4ms()    TCCR0B &= ~((1<<CS01) | (1<<CS00)); TCCR0B |= (1<<CS02);
+/** @brief Set overflow 16ms, prescaler // 101 --> 1024 */
+#define TIM0_overflow_16ms()   TCCR0B &= ~(1<<CS01); TCCR0B |= (1<<CS02) | (1<<CS00);
 
-#define TIM1_overflow_16us()    TCCR0B &= ~((1<<CS02) | (1<<CS01)); TCCR1B |= (1<<CS00);
-
-#define TIM1_overflow_128us()   TCCR0B &= ~((1<<CS02) | (1<<CS01)); TCCR1B |= (1<<CS00);
-
-#define TIM1_overflow_1ms()     TCCR0B &= ~((1<<CS02) | (1<<CS01)); TCCR1B |= (1<<CS00);
-
-#define TIM1_overflow_4ms()     TCCR0B &= ~((1<<CS02) | (1<<CS01)); TCCR1B |= (1<<CS00);
-
-#define TIM1_overflow_16ms()    TCCR0B &= ~((1<<CS02) | (1<<CS01)); TCCR1B |= (1<<CS00);
+/** @brief Enable overflow interrupt, 1 --> enable */
+#define TIM1_overflow_interrupt_enable()  TIMSK0 |= (1<<TOIE0);
+/** @brief Disable overflow interrupt, 0 --> disable */
+#define TIM1_overflow_interrupt_disable() TIMSK0 &= ~(1<<TOIE0);
 /**
  * @name  Definitions for 8-bit Timer/Counter2
  * @note  t_OVF = 1/F_CPU * prescaler * 2^n where n = 8, F_CPU = 16 MHz
  */
 // WRITE YOUR CODE HERE
-#define TIM1_stop()             TCCR1B &= ~((1<<CS22) | (1<<CS21) | (1<<CS20));
+/** @brief Stop timer, prescaler 000 --> STOP */
+#define TIM2_stop()           TCCR2B &= ~((1<<CS22) | (1<<CS21) | (1<<CS20));
+/** @brief Set overflow 16u, prescaler 001 --> 1 */
+#define TIM2_overflow_16u()   TCCR2B &= ~((1<<CS22) | (1<<CS21)); TCCR2B |= (1<<CS20);
+/** @brief Set overflow 128u, prescaler 010 --> 8 */
+#define TIM2_overflow_128u()  TCCR2B &= ~((1<<CS22) | (1<<CS20)); TCCR2B |= (1<<CS21);
+/** @brief Set overflow 512u, prescaler 011 --> 32 */
+#define TIM2_overflow_512u()  TCCR2B &= ~(1<<CS22); TCCR2B |= (1<<CS21) | (1<<CS20);
+/** @brief Set overflow 1ms, prescaler 100 --> 64 */
+#define TIM2_overflow_1ms()   TCCR2B &= ~((1<<CS21) | (1<<CS20)); TCCR2B |= (1<<CS22);
+/** @brief Set overflow 2ms, prescaler 101 --> 128 */
+#define TIM2_overflow_2ms()   TCCR2B &= ~(1<<CS21); TCCR2B |= (1<<CS22) | (1<<CS20);
+/** @brief Set overflow 4ms, prescaler 110 --> 256 */
+#define TIM2_overflow_4ms()    TCCR2B &= ~((1<<CS01) | (1<<CS00)); TCCR0B |= (1<<CS02);
+/** @brief Set overflow 16ms, prescaler // 111 --> 1024 */
+#define TIM2_overflow_16ms()   TCCR2B &= ~(1<<CS01); TCCR0B |= (1<<CS02) | (1<<CS00);
 
-#define TIM1_overflow_16us()    TCCR2B &= ~((1<<CS22) | (1<<CS21)); TCCR1B |= (1<<CS20);
-
-#define TIM1_overflow_128us()   TCCR2B &= ~((1<<CS22) | (1<<CS21)); TCCR1B |= (1<<CS20);
-
-#define TIM1_overflow_512us()   TCCR2B &= ~((1<<CS22) | (1<<CS21)); TCCR1B |= (1<<CS20);
-
-#define TIM1_overflow_1ms()     TCCR2B &= ~((1<<CS22) | (1<<CS21)); TCCR1B |= (1<<CS20);
-
-#define TIM1_overflow_2ms()     TCCR2B &= ~((1<<CS22) | (1<<CS21)); TCCR1B |= (1<<CS20);
-
-#define TIM1_overflow_4ms()     TCCR2B &= ~((1<<CS22) | (1<<CS21)); TCCR1B |= (1<<CS20);
-
-#define TIM1_overflow_16ms()    TCCR2B &= ~((1<<CS22) | (1<<CS21)); TCCR1B |= (1<<CS20);
+/** @brief Enable overflow interrupt, 1 --> enable */
+#define TIM1_overflow_interrupt_enable()  TIMSK2 |= (1<<TOIE2);
+/** @brief Disable overflow interrupt, 0 --> disable */
+#define TIM1_overflow_interrupt_disable() TIMSK2 &= ~(1<<TOIE2);
 
 /** @} */
 
