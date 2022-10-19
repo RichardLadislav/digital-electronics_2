@@ -47,13 +47,21 @@ int main(void)
     lcd_init(LCD_DISP_ON_CURSOR_BLINK);
 
     // Put string(s) on LCD screen
-    lcd_gotoxy(6, 1);
-    lcd_puts("LCD Test");
+    lcd_gotoxy(7, 1);
+    lcd_puts("LCD 7357");
     lcd_putc('!');
+
+     lcd_gotoxy(5, 0); 
+     lcd_putc('.');
+
+     lcd_gotoxy(2, 0); 
+     lcd_putc(':');
 
     // Configuration of 8-bit Timer/Counter2 for Stopwatch update
     // Set the overflow prescaler to 16 ms and enable interrupt
-
+   TIM2_overflow_16ms();
+   TIM2_overflow_interrupt_enable();
+   
 
     // Enables interrupts by setting the global interrupt mask
     sei();
@@ -79,7 +87,10 @@ int main(void)
 ISR(TIMER2_OVF_vect)
 {
     static uint8_t no_of_overflows = 0;
-    static uint8_t tenths = 0;  // Tenths of a second
+    static uint8_t tenths = 0; 
+    static uint8_t seconds = 0;
+    static uint8_t minutes = 0; 
+    static uint8_t tenmin = 0;
     char string[2];             // String for converted numbers by itoa()
 
     no_of_overflows++;
@@ -87,14 +98,73 @@ ISR(TIMER2_OVF_vect)
     {
         // Do this every 6 x 16 ms = 100 ms
         no_of_overflows = 0;
-
+        tenths ++;
         // Count tenth of seconds 0, 1, ..., 9, 0, 1, ...
+        if ( tenths > 9)
+        {
+          tenths = 0;
+          seconds ++;
+          if (seconds > 59)
+          {
+            seconds = 0;
+            minutes ++;
+
+              if (minutes > 9)
+            {
+              minutes = 0;
+              tenmin ++;
+            }
+          }
+          
+        }
+        
 
 
         itoa(tenths, string, 10);  // Convert decimal value to string
         // Display "00:00.tenths"
-        lcd_gotoxy(7, 0);
+        lcd_gotoxy(6, 0);
         lcd_puts(string);
+
+        
+
+if (seconds < 10)
+{
+  itoa(seconds, string, 10);  // Convert decimal value to string
+        // Display "00:seconds.0"
+        lcd_gotoxy(4, 0);
+        lcd_puts(string);
+        lcd_gotoxy(3, 0);
+        lcd_putc('0');
+
+}
+
+else {
+        itoa(seconds, string, 10);  // Convert decimal value to string
+        // Display "00:seconds.0"
+        lcd_gotoxy(3, 0);
+        lcd_puts(string);
+
+}
+
+if (minutes < 10)
+{
+ itoa(minutes, string, 10);  // Convert decimal value to string
+        // Display "minutes:00.0"
+        lcd_gotoxy(1, 0);
+        lcd_puts(string);
+         lcd_gotoxy(0, 0);
+        lcd_putc('0');
+}
+
+else {
+         itoa(minutes, string, 10);  // Convert decimal value to string
+        // Display "minutes:00.0"
+        lcd_gotoxy(1, 0);
+        lcd_puts(string);
+}
+        
+
+
     }
     // Else do nothing and exit the ISR
 }
