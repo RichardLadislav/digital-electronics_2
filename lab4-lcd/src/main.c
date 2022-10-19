@@ -47,21 +47,50 @@ int main(void)
     lcd_init(LCD_DISP_ON_CURSOR_BLINK);
 
     // Put string(s) on LCD screen
-    lcd_gotoxy(7, 1);
-    lcd_puts("LCD 7357");
-    lcd_putc('!');
+    
 
-     lcd_gotoxy(5, 0); 
-     lcd_putc('.');
+      uint8_t customChar[] = {
+        0b11111,
+        0b11010,
+        0b11100,
+        0b10100,
+        0b11100,
+        0b00110,
+        0b11110,
+        0b00101,
 
-     lcd_gotoxy(2, 0); 
-     lcd_putc(':');
+
+        0b11111,
+        0b11011,
+        0b11101,
+        0b10101,
+        0b11101,
+        0b00111,
+        0b11111,
+        0b00101
+    };
+
+    // Initialize display
+    lcd_init(LCD_DISP_ON);
+
+    lcd_command(1<<LCD_CGRAM);       // Set addressing to CGRAM (Character Generator RAM)
+                                     // ie to individual lines of character patterns
+    for (uint8_t i = 0; i < 16; i++)  // Copy new character patterns line by line to CGRAM
+        lcd_data(customChar[i]);
+    lcd_command(1<<LCD_DDRAM);       // Set addressing back to DDRAM (Display Data RAM)
+                                     // ie to character codes
+     lcd_gotoxy(14, 1); 
+    // Display symbol with Character code 0
+    lcd_putc(0x00);
+     lcd_putc(0x01);
 
     // Configuration of 8-bit Timer/Counter2 for Stopwatch update
     // Set the overflow prescaler to 16 ms and enable interrupt
    TIM2_overflow_16ms();
    TIM2_overflow_interrupt_enable();
    
+
+
 
     // Enables interrupts by setting the global interrupt mask
     sei();
@@ -90,8 +119,11 @@ ISR(TIMER2_OVF_vect)
     static uint8_t tenths = 0; 
     static uint8_t seconds = 0;
     static uint8_t minutes = 0; 
-    static uint8_t tenmin = 0;
-    char string[2];             // String for converted numbers by itoa()
+    static uint8_t position = 0; 
+    static uint8_t mocnina = 0;
+   
+    char string[2];     
+    char string2[6];         // String for converted numbers by itoa()
 
     no_of_overflows++;
     if (no_of_overflows >= 6)
@@ -99,6 +131,13 @@ ISR(TIMER2_OVF_vect)
         // Do this every 6 x 16 ms = 100 ms
         no_of_overflows = 0;
         tenths ++;
+     
+
+
+       
+        
+        
+        
         // Count tenth of seconds 0, 1, ..., 9, 0, 1, ...
         if ( tenths > 9)
         {
@@ -109,12 +148,9 @@ ISR(TIMER2_OVF_vect)
             seconds = 0;
             minutes ++;
 
-              if (minutes > 9)
-            {
-              minutes = 0;
-              tenmin ++;
-            }
+             
           }
+    
           
         }
         
@@ -127,6 +163,11 @@ ISR(TIMER2_OVF_vect)
 
         
 
+    mocnina = seconds*seconds;
+    itoa(mocnina, string2, 10);
+    lcd_gotoxy(10, 0); 
+    lcd_putc(mocnina);
+
 if (seconds < 10)
 {
   itoa(seconds, string, 10);  // Convert decimal value to string
@@ -135,6 +176,8 @@ if (seconds < 10)
         lcd_puts(string);
         lcd_gotoxy(3, 0);
         lcd_putc('0');
+
+     
 
 }
 
@@ -162,8 +205,18 @@ else {
         lcd_gotoxy(1, 0);
         lcd_puts(string);
 }
-        
 
+         lcd_gotoxy(10, 1);
+    
+    lcd_putc('c');
+
+     lcd_gotoxy(5, 0); 
+     lcd_putc('.');
+
+     lcd_gotoxy(2, 0); 
+     lcd_putc(':');
+
+    
 
     }
     // Else do nothing and exit the ISR
