@@ -34,9 +34,9 @@ int main(void)
     lcd_init(LCD_DISP_ON);
     lcd_gotoxy(1, 0); lcd_puts("value:");
     lcd_gotoxy(3, 1); lcd_puts("key:");
-    lcd_gotoxy(8, 0); lcd_puts("a");  // Put ADC value in decimal
-    lcd_gotoxy(13,0); lcd_puts("b");  // Put ADC value in hexadecimal
-    lcd_gotoxy(8, 1); lcd_puts("c");  // Put button name here
+    
+   
+    lcd_gotoxy(8, 1); lcd_puts("none");  // Put button name here
 
     // Configure Analog-to-Digital Convertion unit
     // Select ADC voltage reference to "AVcc with external capacitor at AREF pin"
@@ -54,7 +54,8 @@ int main(void)
 
     // Configure 16-bit Timer/Counter1 to start ADC conversion
     // Set prescaler to 33 ms and enable overflow interrupt
-
+    TIM1_overflow_33ms();
+    TIM1_overflow_interrupt_enable();
 
     // Enables interrupts by setting the global interrupt mask
     sei();
@@ -95,4 +96,8 @@ ISR(ADC_vect)
     // Note that, register pair ADCH and ADCL can be read as a 16-bit value ADC
     value = ADC;
     // Convert "value" to "string" and display it
+    itoa(value,string,10);
+    lcd_gotoxy(8, 0); lcd_puts(string);
+    itoa(value,string,16);
+    lcd_gotoxy(13,0); lcd_puts(string);
 }
