@@ -36,7 +36,7 @@ int main(void)
     lcd_gotoxy(3, 1); lcd_puts("key:");
     
    
-    lcd_gotoxy(8, 1); lcd_puts("none");  // Put button name here
+     
 
     // Configure Analog-to-Digital Convertion unit
     // Select ADC voltage reference to "AVcc with external capacitor at AREF pin"
@@ -96,8 +96,85 @@ ISR(ADC_vect)
     // Note that, register pair ADCH and ADCL can be read as a 16-bit value ADC
     value = ADC;
     // Convert "value" to "string" and display it
-    itoa(value,string,10);
+    
+    if(value > 999)
+    {
+      itoa(value,string,10);
     lcd_gotoxy(8, 0); lcd_puts(string);
+    
+    lcd_gotoxy(8, 1); lcd_puts("        ");
+    }
+    
+    else if (value > 99)
+    {
+      itoa(value,string,10);
+    lcd_gotoxy(9, 0); lcd_puts(string);
+    lcd_gotoxy(8, 0); lcd_puts("0");
+    
+    lcd_gotoxy(8, 1); lcd_puts("        ");
+    }
+    
+    else if(value > 9)
+    {
+      itoa(value,string,10);
+    lcd_gotoxy(10, 0); lcd_puts(string);
+    lcd_gotoxy(9, 0); lcd_puts("0");
+    lcd_gotoxy(8, 0); lcd_puts("0");
+    
+    lcd_gotoxy(8, 1); lcd_puts("        ");
+    }
+
+    else 
+    {
+      itoa(value,string,10);
+    lcd_gotoxy(11, 0); lcd_puts(string);
+    lcd_gotoxy(10, 0); lcd_puts("0");
+    lcd_gotoxy(8, 0); lcd_puts("0");
+    lcd_gotoxy(8, 0); lcd_puts("0");
+    
+    lcd_gotoxy(8, 1); lcd_puts("        ");
+    }
+    
+   
+    
+
+    if (value < 90 )
+    {
+      lcd_gotoxy(13,0); lcd_puts("000");
+      lcd_gotoxy(8, 1); lcd_puts("RIGHT"); 
+
+    }
+
+    else if (value < 150)
+    {
+      lcd_gotoxy(13,0); lcd_puts("000");
+      lcd_gotoxy(8, 1); lcd_puts("UP"); 
+    }
+
+    else if (value < 300)
+    {
+      lcd_gotoxy(13,0); lcd_puts("000");
+      lcd_gotoxy(8, 1); lcd_puts("DOWN"); 
+    }
+
+    else if (value < 500)
+    {
+      lcd_gotoxy(13,0); lcd_puts("000");
+      lcd_gotoxy(8, 1); lcd_puts("LEFT"); 
+    }
+
+    else if (value < 800)
+    {
+      lcd_gotoxy(8, 1); lcd_puts("SELECT"); 
+    }
+    
+    else
+    {
+      lcd_gotoxy(8, 1); lcd_puts("none"); 
+    }
+    
     itoa(value,string,16);
     lcd_gotoxy(13,0); lcd_puts(string);
+
+
 }
