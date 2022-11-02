@@ -67,5 +67,5 @@ int main(void)
  **********************************************************************/
 ISR(TIMER1_OVF_vect)
 {
-    uart_puts("done\r\n");
+    uart_puts("Paris\r\n");
 }
