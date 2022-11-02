@@ -71,6 +71,8 @@ ISR(TIMER1_OVF_vect)
 
     uint8_t value;
     char string[8];  // String for converted numbers by itoa()
+    char stringhex[8];
+    char stringdec[8];
 
     value = uart_getc();
     if (value != '\0') {  // Data available from UART
@@ -86,13 +88,13 @@ ISR(TIMER1_OVF_vect)
         uart_puts("\t");
 
         uart_puts("Decimal value: \r\n");
-        itoa(value, string, 10);
-        uart_putc(string);
+        itoa(value, stringdec, 10);
+        uart_putc(stringdec);
         uart_puts("\t");
 
         uart_puts("Hex value: \r\n");
-        itoa(value, string, 16);
-        uart_putc(string);
+        itoa(value, stringhex, 16);
+        uart_putc(stringhex);
         uart_puts("\t");
 
     }
