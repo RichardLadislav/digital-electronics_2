@@ -46,8 +46,8 @@ int main(void)
     sei();
 
     // Put strings to ringbuffer for transmitting via UART
-    uart_puts("Print one line... ");
-    uart_puts("done\r\n");
+    
+   // uart_puts("done\r\n");
 
     // Infinite loop
     while (1)
@@ -67,5 +67,33 @@ int main(void)
  **********************************************************************/
 ISR(TIMER1_OVF_vect)
 {
-    uart_puts("Paris\r\n");
+    
+
+    uint8_t value;
+    char string[8];  // String for converted numbers by itoa()
+
+    value = uart_getc();
+    if (value != '\0') {  // Data available from UART
+        // Display ASCII code of received character
+        // WRITE YOUR CODE HERE
+        uart_puts("Pressed char: \r\n");
+        uart_putc(value);
+        uart_puts("\t");
+
+        uart_puts("Bin value: \r\n");
+        itoa(value, string, 2);
+        uart_putc(string);
+        uart_puts("\t");
+
+        uart_puts("Decimal value: \r\n");
+        itoa(value, string, 10);
+        uart_putc(string);
+        uart_puts("\t");
+
+        uart_puts("Hex value: \r\n");
+        itoa(value, string, 16);
+        uart_putc(string);
+        uart_puts("\t");
+
+    }
 }
