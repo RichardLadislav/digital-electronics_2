@@ -86,7 +86,7 @@ int main(void)
 ISR(TIMER2_OVF_vect)
 {
     static uint8_t no_of_overflows = 0;
-    static uint8_t tenths = 0;  // Tenths of a second
+    static uint8_t tenths = 1;  // Tenths of a second
     char string[2];             // String for converted numbers by itoa()
 
     no_of_overflows++;
@@ -96,7 +96,7 @@ ISR(TIMER2_OVF_vect)
         no_of_overflows = 0;
 
         // Count tenth of seconds 0, 1, ..., 9, 0, 1, ...
-
+    
 
         itoa(tenths, string, 10);  // Convert decimal value to string
         // Display "00:00.tenths"
