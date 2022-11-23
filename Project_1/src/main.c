@@ -32,11 +32,9 @@ int main(void)
 {
     // Initialize display
     lcd_init(LCD_DISP_ON);
-    lcd_gotoxy(1, 0); lcd_puts("value:");
-    lcd_gotoxy(3, 1); lcd_puts("key:");
-    lcd_gotoxy(8, 0); lcd_puts("a");  // Put ADC value in decimal
-    lcd_gotoxy(13,0); lcd_puts("b");  // Put ADC value in hexadecimal
-    lcd_gotoxy(8, 1); lcd_puts("c");  // Put button name here
+    lcd_gotoxy(5, 0); lcd_puts("x:");
+    lcd_gotoxy(5, 1); lcd_puts("y:");
+    
 
     // Configure Analog-to-Digital Convertion unit
     // Select ADC voltage reference to "AVcc with external capacitor at AREF pin"
@@ -44,14 +42,21 @@ int main(void)
     ADMUX &= ~(1 << REFS1);
 
     // Select input channel ADC0 (voltage divider pin)
-    ADMUX &= ~((1 << MUX0) | (1 << MUX1) | (1 << MUX2) | (1 << MUX3));
-    ADMUX &= ~((0 << MUX0) | (1 << MUX1) | (1 << MUX2) | (1 << MUX3));
+   
     // Enable ADC module
     ADCSRA |= (1 << ADEN);
     // Enable conversion complete interrupt
     ADCSRA |= (1 << ADIE);
     // Set clock prescaler to 128
     ADCSRA |= ((1 << ADPS0) | (1 << ADPS1) | (1 << ADPS2));
+
+
+
+   // Select input channel ADC1 (voltage divider pin)
+    //ADMUX |= ((1 << MUX0) | (0 << MUX1) | (0 << MUX2) | (0 << MUX3));
+    
+    
+
 
     // Configure 16-bit Timer/Counter1 to start ADC conversion
     // Set prescaler to 33 ms and enable overflow interrupt
@@ -80,8 +85,25 @@ int main(void)
  **********************************************************************/
 ISR(TIMER1_OVF_vect)
 {
+   static uint8_t channel = 0;
+   if (channel == 0)
+   {
+    ADMUX &= ~((1 << MUX0) | (1 << MUX1) | (1 << MUX2) | (1 << MUX3));
+    channel = 1;
+   }
+   else
+   {
+    ADMUX &= ~((1 << MUX1) | (1 << MUX2) | (1 << MUX3));
+    ADMUX |= (1 << MUX0);
+    channel = 0;
+   }
+   
+   
+   
     // Start ADC conversion
     ADCSRA |= (1 << ADSC);
+
+
 }
 
 /**********************************************************************
@@ -90,19 +112,53 @@ ISR(TIMER1_OVF_vect)
  **********************************************************************/
 ISR(ADC_vect)
 {
+   static uint8_t channel = 0;
     uint16_t value;
+   
     char string[4];  // String for converted numbers by itoa()
 
     // Read converted value
     // Note that, register pair ADCH and ADCL can be read as a 16-bit value ADC
-    value = ADC;
+    
     //value = ADC;
     // Convert "value" to "string" and display it
 
-    
-    
-    
+    if (channel == 0)
+    {
+    value = ADC;
+
     itoa(value, string, 10);
+    lcd_gotoxy(8,0);
+    lcd_puts(string);
+
+    channel = 1;
+    }
+    
+    else if (channel == 1)
+    
+    {
+    value = ADC;
+
+    itoa(value, string, 10);
+    lcd_gotoxy(8,1);
+    lcd_puts(string);
+
+    channel = 0;
+    }
+
+   
+    
+
+
+
+
+    
+    
+
+    
+
+
+    /*
     if(value > 999)
     {
       lcd_gotoxy(8,0);
@@ -190,6 +246,6 @@ ISR(ADC_vect)
           }
         }
       }
-    }
+    }*/
     
 }
