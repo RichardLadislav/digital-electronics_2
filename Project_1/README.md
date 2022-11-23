@@ -18,7 +18,7 @@
 
 
 ## Hardware description
-![your figure]()
+![Arduino Uno](https://github.com/davidhro/digital-electronics_2/blob/main/Project_1/pictures/Arduino_uno_pinout.png)
 ![your figure]()
 ![your figure]()
 ![your figure]()
