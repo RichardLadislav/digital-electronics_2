@@ -10,7 +10,11 @@
  * This work is licensed under the terms of the MIT license.
  * 
  **********************************************************************/
+#define ENCODER_SW PD3
+#define JOYSTICK_SW PD2
 
+#define ENCODER_A PB4
+#define ENCODER_B PB5
 
 /* Includes ----------------------------------------------------------*/
 #include <avr/io.h>         // AVR device-specific IO definitions
@@ -21,6 +25,12 @@
 #include <stdlib.h>         // C library. Needed for number conversions
 
 
+
+#define PD3 3          // In Arduino world, PB5 is called "13"
+#define PD2 2
+#define PB4 12
+#define PB5 13
+
 /* Function definitions ----------------------------------------------*/
 /**********************************************************************
  * Function: Main function where the program execution begins
@@ -28,13 +38,22 @@
  *           When AD conversion ends, send converted value to LCD screen.
  * Returns:  none
  **********************************************************************/
+
+
 int main(void)
 {
     // Initialize display
+    
     lcd_init(LCD_DISP_ON);
     lcd_gotoxy(5, 0); lcd_puts("x:");
     lcd_gotoxy(5, 1); lcd_puts("y:");
     
+    GPIO_mode_input_pullup(&DDRD, JOYSTICK_SW);
+    GPIO_mode_input_pullup(&DDRD, ENCODER_SW);
+
+    GPIO_mode_input_nopull(&DDRB, ENCODER_A);
+    GPIO_mode_input_nopull(&DDRB, ENCODER_B);
+
 
     // Configure Analog-to-Digital Convertion unit
     // Select ADC voltage reference to "AVcc with external capacitor at AREF pin"
@@ -50,13 +69,11 @@ int main(void)
     // Set clock prescaler to 128
     ADCSRA |= ((1 << ADPS0) | (1 << ADPS1) | (1 << ADPS2));
 
-
+    
 
    // Select input channel ADC1 (voltage divider pin)
     //ADMUX |= ((1 << MUX0) | (0 << MUX1) | (0 << MUX2) | (0 << MUX3));
     
-    
-
 
     // Configure 16-bit Timer/Counter1 to start ADC conversion
     // Set prescaler to 33 ms and enable overflow interrupt
@@ -85,6 +102,7 @@ int main(void)
  **********************************************************************/
 ISR(TIMER1_OVF_vect)
 {
+   // ADC
    static uint8_t channel = 0;
    if (channel == 0)
    {
@@ -97,12 +115,79 @@ ISR(TIMER1_OVF_vect)
     ADMUX |= (1 << MUX0);
     channel = 0;
    }
-   
-   
-   
-    // Start ADC conversion
+    
+   // Start ADC conversion
     ADCSRA |= (1 << ADSC);
 
+
+
+    // Switche
+
+    static uint8_t encodeButtVal = 0;
+    encodeButtVal = GPIO_read(&PIND, ENCODER_SW);
+
+    static uint8_t buttonVal = 0;
+    buttonVal = GPIO_read(&PIND, JOYSTICK_SW);
+
+    if (buttonVal == 0)
+    {
+       lcd_gotoxy(5, 0); 
+       lcd_puts("z:");
+    }
+    else
+    {
+      lcd_gotoxy(5, 0); 
+       lcd_puts("x:");
+    }
+    
+    if (encodeButtVal == 0)
+    {
+       lcd_gotoxy(5, 1); 
+       lcd_puts("z:");
+    }
+    else
+    {
+      lcd_gotoxy(5, 1); 
+       lcd_puts("y:");
+    }
+   
+
+    //enkodér    
+
+    static uint8_t encBClockVal;
+   
+
+    int predStav = GPIO_read(&PINB, ENCODER_B);
+    //encBClockVal = GPIO_read(&PINB, ENCODER_B);
+
+    static uint8_t encADataVal;
+    encADataVal = GPIO_read(&PINB, ENCODER_A);
+
+    if (GPIO_read(&PINB, ENCODER_B) != predStav)
+    {
+      encBClockVal = GPIO_read(&PINB, ENCODER_B);
+      if (GPIO_read(&PINB, ENCODER_A) !=encBClockVal)
+      {
+        lcd_gotoxy(0, 0); 
+        lcd_puts("->");
+      }
+      else
+      {
+       lcd_gotoxy(0, 0); 
+        lcd_puts("<-");
+      }
+      
+    }
+    
+
+    
+    else
+    {
+       lcd_gotoxy(0, 0); 
+       lcd_puts("0");
+    }
+    
+    
 
 }
 
@@ -146,106 +231,6 @@ ISR(ADC_vect)
     channel = 0;
     }
 
-   
-    
-
-
-
-
-    
-    
-
-    
-
-
-    /*
-    if(value > 999)
-    {
-      lcd_gotoxy(8,0);
-      lcd_puts(string);
-    }else{
-      if(value>99)
-      {
-        lcd_gotoxy(9,0);
-        lcd_puts(string);
-        lcd_gotoxy(8,0);
-        lcd_putc('0');
-      }else{
-        if(value>9)
-        {
-          lcd_gotoxy(10,0);
-          lcd_puts(string);
-          lcd_gotoxy(8,0);
-          lcd_putc('0');
-          lcd_gotoxy(9,0);
-          lcd_putc('0');
-        }else{
-          lcd_gotoxy(11,0);
-          lcd_puts(string);
-          lcd_gotoxy(8,0);
-          lcd_putc('0');
-          lcd_gotoxy(9,0);
-          lcd_putc('0');
-          lcd_gotoxy(10,0);
-          lcd_putc('0');
-        }
-      }
-    }
-    if(value > 255)
-    {
-      itoa(value, string, 16);
-      lcd_gotoxy(13,0);
-      lcd_puts(string);
-    }else{
-      if(value > 15)
-      {
-        itoa(value, string, 16);
-        lcd_gotoxy(14,0);
-        lcd_puts(string);
-        lcd_gotoxy(13,0);
-        lcd_putc('0');
-      }else{
-        itoa(value, string, 16);
-        lcd_gotoxy(15,0);
-        lcd_puts(string);
-        lcd_gotoxy(13,0);
-        lcd_putc('0');
-        lcd_gotoxy(14,0);
-        lcd_putc('0');
-      }
-    }
-
-    if(value < 25)
-    {
-      lcd_gotoxy(8,1);
-      lcd_puts("right ");
-    }else{
-      if(value < 125)
-      {
-        lcd_gotoxy(8,1);
-        lcd_puts("up    ");
-      }else{
-        if(value < 280)
-        {
-          lcd_gotoxy(8,1);
-          lcd_puts("down  ");
-        }else{
-          if(value < 450)
-          {
-            lcd_gotoxy(8,1);
-            lcd_puts("left  ");
-          }else{
-            if(value < 670)
-            {
-              lcd_gotoxy(8,1);
-              lcd_puts("select");
-            }else{
-              lcd_gotoxy(8,1);
-              lcd_puts("none  ");
-            }
-          }
-        }
-      }
-    }*/
+  
     
 }
