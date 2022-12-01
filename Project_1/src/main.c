@@ -196,29 +196,26 @@ ISR(TIMER1_OVF_vect)
     static uint8_t mocnina = 0;
     char string[2];             // String for converted numbers by itoa()
 
-
-    mocnina = seconds*seconds;
-    itoa(mocnina, string, 10);
-    lcd_gotoxy(10,0);
-    lcd_puts(string);
+    
+   
 
     no_of_overflows++;
     if (no_of_overflows >= 3)
     {
         // Do this every 3 x 33 ms = 100 ms
         no_of_overflows = 0;
-        tenths++;
-        // Count tenth of seconds 0, 1, ..., 9, 0, 1, ...
-        if (tenths > 9)
+        tenths--;
+        // Count tenth of seconds 9, 8, ..., 0, 9, 8, ...
+        if (tenths = 0)
         {
-          tenths = 0;
-          seconds++;
+          tenths = 9;
+          seconds--;
 
-          if (seconds > 59)
+          if (seconds = 0)
           {
-            seconds = 0;
-            minutes++;
-            if (minutes > 59)
+            seconds = 59;
+            minutes--;
+            if (minutes = 0)
             {
               tenths = 0;
               seconds = 0;
@@ -226,6 +223,7 @@ ISR(TIMER1_OVF_vect)
             }
           }
         }
+        
         itoa(tenths, string, 10);  // Convert decimal value to string
         // Display "00:00.tenths"
         lcd_gotoxy(6, 0);
