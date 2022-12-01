@@ -10,11 +10,11 @@
  * This work is licensed under the terms of the MIT license.
  * 
  **********************************************************************/
-#define ENCODER_SW PD3
-#define JOYSTICK_SW PD2
+#define ENCODER_SW PD3     // Encoder button
+#define JOYSTICK_SW PD2    // Joystick button
 
-#define ENCODER_A PB4
-#define ENCODER_B PB5
+#define ENCODER_A PB4      // Encoder data
+#define ENCODER_B PB5      // Encoder clock
 
 /* Includes ----------------------------------------------------------*/
 #include <avr/io.h>         // AVR device-specific IO definitions
