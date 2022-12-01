@@ -152,40 +152,7 @@ ISR(TIMER1_OVF_vect)
     }
    
 
-    //enkodér    
-
-    static uint8_t encBClockVal;
-   
-
-    int predStav = GPIO_read(&PINB, ENCODER_B);
-    //encBClockVal = GPIO_read(&PINB, ENCODER_B);
-
-    static uint8_t encADataVal;
-    encADataVal = GPIO_read(&PINB, ENCODER_A);
-
-    if (GPIO_read(&PINB, ENCODER_B) != predStav)
-    {
-      encBClockVal = GPIO_read(&PINB, ENCODER_B);
-      if (GPIO_read(&PINB, ENCODER_A) !=encBClockVal)
-      {
-        lcd_gotoxy(0, 0); 
-        lcd_puts("->");
-      }
-      else
-      {
-       lcd_gotoxy(0, 0); 
-        lcd_puts("<-");
-      }
-      
-    }
     
-
-    
-    else
-    {
-       lcd_gotoxy(0, 0); 
-       lcd_puts("0");
-    }
     
     // timer app
     
@@ -197,8 +164,17 @@ ISR(TIMER1_OVF_vect)
     char string[2];             // String for converted numbers by itoa()
 
     
-   
+   if (buttonVal == 0)
+    {
+       seconds ++;
+       minutes ++;
+       
+    }
 
+    if (encodeButtVal == 0)
+  {
+       
+    
     no_of_overflows++;
     if (no_of_overflows >= 3)
     {
@@ -266,7 +242,7 @@ ISR(TIMER1_OVF_vect)
         lcd_gotoxy(15,1);
 
     }
-
+   }
 }
 
 /**********************************************************************
